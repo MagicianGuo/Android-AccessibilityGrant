@@ -37,8 +37,10 @@ class AccessibilityListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         val context = holder.itemView.context
         if (holder is AccessibilityItemHolder) {
             holder.ivIcon.setImageDrawable(itemBean.applicationIcon)
-            holder.tvName.text = itemBean.applicationLabel
-            holder.tvPackage.text = itemBean.packageName
+            holder.tvName.text = "应用名称：${itemBean.applicationLabel}"
+            holder.tvPackage.text = "应用包名：${itemBean.packageName}"
+            holder.tvServiceLabel.text = "辅助功能名称：${itemBean.serviceLabel}"
+            holder.tvServiceName.text = "辅助功能服务：${itemBean.serviceName}"
             holder.swAccessibility.isChecked = itemBean.enabled
             holder.swAccessibility.setOnCheckedChangeListener { _, isChecked ->
                 val fullServiceName = "${itemBean.packageName}/${itemBean.serviceName}"
@@ -70,6 +72,8 @@ class AccessibilityListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         val ivIcon: ImageView = itemView.findViewById(R.id.iv_icon)
         val tvName: TextView = itemView.findViewById(R.id.tv_name)
         val tvPackage: TextView = itemView.findViewById(R.id.tv_package)
+        val tvServiceLabel: TextView = itemView.findViewById(R.id.tv_service_label)
+        val tvServiceName: TextView = itemView.findViewById(R.id.tv_service_name)
         val swAccessibility: SwitchMaterial = itemView.findViewById(R.id.sw_accessibility)
     }
 

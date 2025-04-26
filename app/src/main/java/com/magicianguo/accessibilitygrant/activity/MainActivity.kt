@@ -99,8 +99,9 @@ class MainActivity : AppCompatActivity() {
             val applicationIcon = packageManager.getApplicationIcon(packageName)
             val applicationLabel = packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName, 0))
             val enabled = "${enabledNames}/".contains("${packageName}/")
+            val serviceLabel = resolveInfo.serviceInfo.loadLabel(packageManager)
             val serviceName = resolveInfo.serviceInfo.name
-            accessibilityList.add(AccessibilityItemBean(packageName, applicationIcon, applicationLabel, enabled, serviceName))
+            accessibilityList.add(AccessibilityItemBean(packageName, applicationIcon, applicationLabel, enabled, serviceLabel.toString(), serviceName))
         }
         mAdapter.updateList(accessibilityList)
     }
