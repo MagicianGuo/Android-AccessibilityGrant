@@ -25,6 +25,11 @@ android {
     kotlinOptions {
         jvmTarget = '11'
     }
+    applicationVariants.configureEach { variant ->
+        variant.outputs.configureEach { output ->
+            outputFileName = "${rootProject.name}-${buildType.name}.apk"
+        }
+    }
 }
 
 dependencies {
