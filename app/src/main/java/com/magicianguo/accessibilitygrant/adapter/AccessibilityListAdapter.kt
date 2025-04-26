@@ -38,6 +38,7 @@ class AccessibilityListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
         val itemBean = mList[position]
         val context = holder.itemView.context
         if (holder is AccessibilityItemHolder) {
+            Log.d("AccessibilityListAdapter", "onBindViewHolder: 应用：${itemBean.applicationLabel} , 是否开启：${itemBean.enabled}")
             holder.ivIcon.setImageDrawable(itemBean.applicationIcon)
             holder.tvName.text = "应用名称：${itemBean.applicationLabel}"
             holder.tvPackage.text = "应用包名：${itemBean.packageName}"
@@ -76,6 +77,7 @@ class AccessibilityListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
                     Log.d("AccessibilityListAdapter", "onBindViewHolder: isChecked = $isChecked")
                     Log.d("AccessibilityListAdapter", "onBindViewHolder: result = $result")
                     Settings.Secure.putString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, result.toString())
+                    itemBean.enabled = isChecked
                 }, 100)
             }
         }
