@@ -8,5 +8,6 @@ data class AccessibilityItemBean(
     val applicationLabel: CharSequence,
     val enabled: Boolean,
     val serviceLabel: String,
-    val serviceName: String
+    val serviceName: String,
+    val appType: Int
 )

@@ -2,6 +2,7 @@ package com.magicianguo.accessibilitygrant.activity
 
 import android.Manifest
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.RemoteException
@@ -42,6 +43,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private val mComparator =
+        Comparator<AccessibilityItemBean> { o1, o2 -> o1.appType - o2.appType }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,12 +101,16 @@ class MainActivity : AppCompatActivity() {
             val packageName = resolveInfo.serviceInfo.packageName
             Log.d("MainActivity", "loadList: resolveInfo.serviceInfo = ${resolveInfo.serviceInfo.name}")
             val applicationIcon = packageManager.getApplicationIcon(packageName)
-            val applicationLabel = packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName, 0))
+            val applicationInfo = packageManager.getApplicationInfo(packageName, 0)
+            val applicationLabel = packageManager.getApplicationLabel(applicationInfo)
             val enabled = "${enabledNames}/".contains("${packageName}/")
             val serviceLabel = resolveInfo.serviceInfo.loadLabel(packageManager)
             val serviceName = resolveInfo.serviceInfo.name
-            accessibilityList.add(AccessibilityItemBean(packageName, applicationIcon, applicationLabel, enabled, serviceLabel.toString(), serviceName))
+            // 应用类型，0为用户安装应用，1为系统应用
+            val appType = if (applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0) 0 else 1
+            accessibilityList.add(AccessibilityItemBean(packageName, applicationIcon, applicationLabel, enabled, serviceLabel.toString(), serviceName, appType))
         }
+        accessibilityList.sortWith(mComparator)
         mAdapter.updateList(accessibilityList)
     }
 
