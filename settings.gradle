@@ -27,3 +27,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "AccessibilityGrant"
 include ':app'
+include ':lib-shizuku'

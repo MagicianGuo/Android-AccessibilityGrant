@@ -1,4 +1,4 @@
-//package com.magicianguo.accessibilitygrant
+//package com.magicianguo.libshizuku
 //
 //import androidx.test.platform.app.InstrumentationRegistry
 //import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@
 //    fun useAppContext() {
 //        // Context of the app under test.
 //        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-//        assertEquals("com.magicianguo.accessibilitygrant", appContext.packageName)
+//        assertEquals("com.magicianguo.libshizuku.test", appContext.packageName)
 //    }
 //}

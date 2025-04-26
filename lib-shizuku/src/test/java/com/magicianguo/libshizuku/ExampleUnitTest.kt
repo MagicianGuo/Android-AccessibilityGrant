@@ -1,4 +1,4 @@
-//package com.magicianguo.accessibilitygrant
+//package com.magicianguo.libshizuku
 //
 //import org.junit.Test
 //
