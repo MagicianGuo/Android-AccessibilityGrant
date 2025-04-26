@@ -2,5 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="app_type_user">#009900</color>
+    <color name="app_type_system">#2277FF</color>
     <color name="gray">#CCCCCC</color>
 </resources>
