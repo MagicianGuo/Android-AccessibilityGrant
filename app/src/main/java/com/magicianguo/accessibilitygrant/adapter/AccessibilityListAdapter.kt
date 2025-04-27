@@ -53,32 +53,37 @@ class AccessibilityListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>()
             }
             holder.swAccessibility.isChecked = itemBean.enabled
             // 这里不能使用 setOnCheckedChangeListener ，容易在滚动中触发回调
-            holder.swAccessibility.setOnClickListener { v ->
-                v.postDelayed({
-                    val isChecked = holder.swAccessibility.isChecked
-                    val fullServiceName = "${itemBean.packageName}/${itemBean.serviceName}"
-                    val services = Settings.Secure.getString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
-                    Log.d("AccessibilityListAdapter", "onBindViewHolder: services = $services")
-                    val enabledNames = mutableListOf<String>()
-                    if (!services.isNullOrEmpty()) {
-                        enabledNames.addAll(services.split(":"))
+            holder.swAccessibility.setOnClickListener { _ ->
+                val isChecked = holder.swAccessibility.isChecked
+
+                val fullServiceName = if (itemBean.serviceName.contains(itemBean.packageName)) {
+                    "${itemBean.packageName}/${itemBean.serviceName.removePrefix(itemBean.packageName)}"
+                } else {
+                    "${itemBean.packageName}/${itemBean.serviceName}"
+                }
+
+                Log.d("AccessibilityListAdapter", "onBindViewHolder: fullServiceName = $fullServiceName")
+                val services = Settings.Secure.getString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
+                Log.d("AccessibilityListAdapter", "onBindViewHolder: services = $services")
+                val enabledNames = mutableListOf<String>()
+                if (!services.isNullOrEmpty()) {
+                    enabledNames.addAll(services.split(":"))
+                }
+                enabledNames.remove(fullServiceName)
+                if (isChecked) {
+                    enabledNames.add(fullServiceName)
+                }
+                val result = StringBuilder()
+                for (i in 0 until enabledNames.size) {
+                    if (i != 0) {
+                        result.append(":")
                     }
-                    enabledNames.remove(fullServiceName)
-                    if (isChecked) {
-                        enabledNames.add(fullServiceName)
-                    }
-                    val result = StringBuilder()
-                    for (i in 0 until enabledNames.size) {
-                        if (i != 0) {
-                            result.append(":")
-                        }
-                        result.append(enabledNames[i])
-                    }
-                    Log.d("AccessibilityListAdapter", "onBindViewHolder: isChecked = $isChecked")
-                    Log.d("AccessibilityListAdapter", "onBindViewHolder: result = $result")
-                    Settings.Secure.putString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, result.toString())
-                    itemBean.enabled = isChecked
-                }, 100)
+                    result.append(enabledNames[i])
+                }
+                Log.d("AccessibilityListAdapter", "onBindViewHolder: isChecked = $isChecked")
+                Log.d("AccessibilityListAdapter", "onBindViewHolder: result = $result")
+                Settings.Secure.putString(context.contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, result.toString())
+                itemBean.enabled = isChecked
             }
         }
     }
