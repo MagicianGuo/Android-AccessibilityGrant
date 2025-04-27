@@ -39,13 +39,10 @@ class MainActivity : AppCompatActivity() {
 
     private var mSearchJob: Job? = null
     private val mAdapter = AccessibilityListAdapter()
-    private var mShizukuHasBinder = false
-    private var mShizukuGranted = false
     private val mPermissionResultListener = object : Shizuku.OnRequestPermissionResultListener {
         override fun onRequestPermissionResult(requestCode: Int, grantResult: Int) {
             if (requestCode == 0) {
-                mShizukuGranted = grantResult == PackageManager.PERMISSION_GRANTED
-                if (mShizukuGranted) {
+                if (grantResult == PackageManager.PERMISSION_GRANTED) {
                     grantPermissionByShizuku(Manifest.permission.WRITE_SECURE_SETTINGS)
                     loadList()
                 }
@@ -86,6 +83,13 @@ class MainActivity : AppCompatActivity() {
         Shizuku.addRequestPermissionResultListener(mPermissionResultListener)
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (isSecureGranted()) {
+            loadList()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         mEtSearch.removeTextChangedListener(mSearchTextWatcher)
@@ -95,14 +99,9 @@ class MainActivity : AppCompatActivity() {
     private fun initView() {
         mRvList.layoutManager = LinearLayoutManager(this)
         mRvList.adapter = mAdapter
-        mShizukuHasBinder = Shizuku.pingBinder()
-        mShizukuGranted = mShizukuHasBinder && Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED
-        if (mShizukuGranted) {
-            loadList()
-        }
         mBtnReqShizuku.setOnClickListener {
-            if (!mShizukuHasBinder) {
-                Toast.makeText(this, "请激活Shizuku并重启应用！", Toast.LENGTH_SHORT).show()
+            if (!Shizuku.pingBinder()) {
+                Toast.makeText(this, "请激活Shizuku！", Toast.LENGTH_SHORT).show()
             } else {
                 Shizuku.requestPermission(0)
             }
@@ -124,9 +123,6 @@ class MainActivity : AppCompatActivity() {
             Intent("android.accessibilityservice.AccessibilityService"),
             0
         )
-        resolveInfos.forEach { resolveInfo ->
-
-        }
         for (i in 0 until resolveInfos.size) {
             val resolveInfo = resolveInfos[i]
             val packageName = resolveInfo.serviceInfo.packageName
@@ -165,5 +161,9 @@ class MainActivity : AppCompatActivity() {
         } catch (e: RemoteException) {
             e.printStackTrace()
         }
+    }
+
+    private fun isSecureGranted(): Boolean {
+        return checkSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED
     }
 }
